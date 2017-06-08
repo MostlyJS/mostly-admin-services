@@ -15,6 +15,7 @@ class ActionsStatsService extends Service {
 
   setup(app) {
     this.app = app;
+    this._refresh();
     setInterval(() => {
       this._refresh();
     }, this.sampleInterval);
