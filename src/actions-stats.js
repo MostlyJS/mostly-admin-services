@@ -1,6 +1,7 @@
 import { merge, forEach } from 'lodash';
 import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
+import errors from 'feathers-errors';
 
 const debug = makeDebug('mostly:admin:service:actionsStats');
 
@@ -37,8 +38,20 @@ class ActionsStatsService extends Service {
           ts: resp.ts
         });
         debug('refresh action', action);
-        this.remove(action.id);
-        this.create(action);
+        this.find({ query: {
+          id: action.id
+        }}).then(results => {
+          if (results && results.length > 0) {
+            return this.update(action.id, action);
+          } else {
+            return this.create(action);
+          }
+        }).then(() => {
+          // remove outdated actions
+          return this.remove(null, { query: {
+            ts: { $lt: Date.now() - this.sampleInterval * 3 }
+          }}).catch(errors.NotFound);
+        }).catch(console.error);
       });
     });
   }

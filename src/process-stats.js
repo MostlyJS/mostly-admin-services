@@ -1,6 +1,7 @@
 import { merge } from 'lodash';
 import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
+import errors from 'feathers-errors';
 
 const debug = makeDebug('mostly:admin:service:processStats');
 
@@ -34,16 +35,21 @@ class ProcessStatsService extends Service {
       if (err) {
         return console.error('Error when refresh processInfo: ', err);
       }
-      debug('refresh processInfo', resp);
+      debug('refresh process', resp);
       this.find({ query: {
         app: resp.app
       }}).then(results => {
         if (results && results.length > 0) {
-          this.update(results[0].app, resp);
+          return this.update(resp.app, resp);
         } else {
-          this.create(resp);
+          return this.create(resp);
         }
-      });
+      }).then(() => {
+        // remove outdated process
+        return this.remove(null, { query: {
+          ts: { $lt: Date.now() - this.sampleInterval * 3 }
+        }}).catch(errors.NotFound);
+      }).catch(console.error);
     });
   }
 
