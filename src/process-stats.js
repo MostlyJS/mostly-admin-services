@@ -20,29 +20,25 @@ class ProcessStatsService extends Service {
 
   setup(app) {
     this.app = app;
-    this._refresh();
-    setInterval(() => {
-      this._refresh();
-    }, this.sampleInterval);
+    this._subProcessInfo();
   }
 
-  _refresh() {
-    this.app.trans.act({
+  _subProcessInfo() {
+    this.app.trans.add({
+      pubsub$: true,
       topic: 'stats',
-      cmd: 'processInfo',
-      maxMessages$: -1
-    }, (err, resp) => {
-      if (err) {
-        return console.error('Error when refresh processInfo: ', err);
-      }
-      debug('refresh process', resp);
+      cmd: 'processInfo'
+    }, (resp) => {
+      const info = resp.info;
+      if (!info) return;
+      debug('refresh process', info);
       this.find({ query: {
-        app: resp.app
+        app: info.app
       }}).then(results => {
         if (results && results.length > 0) {
-          return this.update(resp.app, resp);
+          return this.update(info.app, info);
         } else {
-          return this.create(resp);
+          return this.create(info);
         }
       }).then(() => {
         // remove outdated process

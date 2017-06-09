@@ -16,26 +16,22 @@ class ActionsStatsService extends Service {
 
   setup(app) {
     this.app = app;
-    this._refresh();
-    setInterval(() => {
-      this._refresh();
-    }, this.sampleInterval);
+    this._subActionsInfo();
   }
 
-  _refresh() {
-    this.app.trans.act({
+  _subActionsInfo() {
+    this.app.trans.add({
+      pubsub$: true,
       topic: 'stats',
-      cmd: 'actionsInfo',
-      maxMessages$: -1
-    }, (err, resp) => {
-      if (err) {
-        return console.error('Error when refresh actionsInfo: ', err);
-      }
-      forEach(resp.actions, action => {
+      cmd: 'actionsInfo'
+    }, (resp) => {
+      const info = resp.info;
+      if (!info) return;
+      forEach(info.actions, action => {
         action = merge(action, {
-          id: resp.app + '-' + action.pattern.topic + '-' + action.pattern.cmd,
-          app: resp.app,
-          ts: resp.ts
+          id: info.app + '-' + action.pattern.topic + '-' + action.pattern.cmd,
+          app: info.app,
+          ts: info.ts
         });
         debug('refresh action', action);
         this.find({ query: {
