@@ -2,13 +2,18 @@ import { merge, forEach } from 'lodash';
 import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
+import { sorter } from './utils';
 
 const debug = makeDebug('mostly:admin:service:actionsStats');
+
+const defaultOptions = {
+  sorter: sorter
+};
 
 class ActionsStatsService extends Service {
 
   constructor(options) {
-    options = merge({}, options);
+    options = merge({}, defaultOptions, options);
     super(options);
     this.name = options.name || 'ActionsStatsService';
     this.sampleInterval = options.sampleInterval || 10000;
