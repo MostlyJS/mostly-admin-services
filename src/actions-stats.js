@@ -53,6 +53,7 @@ class ActionsStatsService extends Service {
   }
 
   find(params) {
+    console.log("########find", params);
     return super.find(params);
   }
 
