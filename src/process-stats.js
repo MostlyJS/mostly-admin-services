@@ -5,14 +5,10 @@ import errors from 'feathers-errors';
 
 const debug = makeDebug('mostly:admin:service:processStats');
 
-const defaultOptions = {
-  idField: 'app'
-};
-
 class ProcessStatsService extends Service {
 
   constructor(options) {
-    options = merge({}, defaultOptions, options);
+    options = merge({}, options);
     super(options);
     this.name = options.name || 'ProcessStatsService';
     this.sampleInterval = options.sampleInterval || 10000;
@@ -32,13 +28,16 @@ class ProcessStatsService extends Service {
       const info = resp.info;
       if (!info) return;
       debug('refresh process', info);
+      let proc = merge(info, {
+        id: info.app
+      });
       this.find({ query: {
-        app: info.app
+        id: proc.id
       }}).then(results => {
         if (results && results.length > 0) {
-          return this.update(info.app, info);
+          return this.update(proc.id, proc);
         } else {
-          return this.create(info);
+          return this.create(proc);
         }
       }).then(() => {
         // remove outdated process
