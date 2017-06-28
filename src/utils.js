@@ -8,7 +8,6 @@ export function sorter($sort) {
 
       let firstValue = get(first, key);
       let secondValue = get(second, key);
-      console.log('sorter########', firstValue, secondValue, key);
       if (firstValue < secondValue) {
         comparator -= 1 * modifier;
       }

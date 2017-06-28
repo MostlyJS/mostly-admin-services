@@ -32,7 +32,7 @@ class ProcessStatsService extends Service {
     }, (resp) => {
       const info = resp.info;
       if (!info) return;
-      debug('refresh process', info);
+      //debug('refresh process', info);
       let proc = merge(info, {
         id: info.app
       });

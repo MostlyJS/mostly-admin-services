@@ -38,7 +38,7 @@ class ActionsStatsService extends Service {
           app: info.app,
           ts: info.ts
         });
-        debug('refresh action', action);
+        //debug('refresh action', action);
         this.find({ query: {
           id: action.id
         }}).then(results => {
