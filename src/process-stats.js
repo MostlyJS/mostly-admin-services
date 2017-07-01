@@ -1,7 +1,7 @@
-import { merge } from 'lodash';
 import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
+import { hooks } from 'mostly-feathers-mongoose';
 import { sorter } from './utils';
 
 const debug = makeDebug('mostly:admin:service:processStats');
@@ -10,10 +10,16 @@ const defaultOptions = {
   sorter: sorter
 };
 
+const defaultHooks = {
+  after: {
+    all: [ hooks.responder() ]
+  }
+};
+
 class ProcessStatsService extends Service {
 
   constructor(options) {
-    options = merge({}, defaultOptions, options);
+    options = Object.assign({}, defaultOptions, options);
     super(options);
     this.name = options.name || 'ProcessStatsService';
     this.sampleInterval = options.sampleInterval || 10000;
@@ -21,6 +27,7 @@ class ProcessStatsService extends Service {
 
   setup(app) {
     this.app = app;
+    this.hooks(defaultHooks);
     this._subProcessInfo();
   }
 
@@ -33,7 +40,7 @@ class ProcessStatsService extends Service {
       const info = resp.info;
       if (!info) return;
       //debug('refresh process', info);
-      let proc = merge(info, {
+      let proc = Object.assign(info, {
         id: info.app
       });
       this.find({ query: {

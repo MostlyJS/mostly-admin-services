@@ -1,7 +1,8 @@
-import { merge, forEach } from 'lodash';
+import { forEach } from 'lodash';
 import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
+import { hooks } from 'mostly-feathers-mongoose';
 import { sorter } from './utils';
 
 const debug = makeDebug('mostly:admin:service:actionsStats');
@@ -10,10 +11,16 @@ const defaultOptions = {
   sorter: sorter
 };
 
+const defaultHooks = {
+  after: {
+    all: [ hooks.responder() ]
+  }
+};
+
 class ActionsStatsService extends Service {
 
   constructor(options) {
-    options = merge({}, defaultOptions, options);
+    options = Object.assign({}, defaultOptions, options);
     super(options);
     this.name = options.name || 'ActionsStatsService';
     this.sampleInterval = options.sampleInterval || 10000;
@@ -21,6 +28,7 @@ class ActionsStatsService extends Service {
 
   setup(app) {
     this.app = app;
+    this.hooks(defaultHooks);
     this._subActionsInfo();
   }
 
@@ -33,7 +41,7 @@ class ActionsStatsService extends Service {
       const info = resp.info;
       if (!info) return;
       forEach(info.actions, action => {
-        action = merge(action, {
+        action = Object.assign(action, {
           id: info.app + '-' + action.pattern.topic + '-' + action.pattern.cmd,
           app: info.app,
           ts: info.ts
