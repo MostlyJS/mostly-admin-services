@@ -2,18 +2,13 @@ import makeDebug from 'debug';
 import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
 import { hooks } from 'mostly-feathers-mongoose';
-import { sorter } from './utils';
+import defaultHooks from './processes-stats-hooks';
+import { sorter } from '../../utils';
 
 const debug = makeDebug('mostly:admin:service:processStats');
 
 const defaultOptions = {
   sorter: sorter
-};
-
-const defaultHooks = {
-  after: {
-    all: [ hooks.responder() ]
-  }
 };
 
 class ProcessStatsService extends Service {
