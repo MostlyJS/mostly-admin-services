@@ -1,23 +1,23 @@
-import { forEach } from 'lodash';
 import makeDebug from 'debug';
-import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
+import { map } from 'lodash';
+import { Service, createModel } from 'mostly-feathers-mongoose';
 import defaultHooks from './actions-stats-hooks';
-import { sorter } from '../../utils';
 
 const debug = makeDebug('mostly:admin:service:actionsStats');
 
 const defaultOptions = {
-  sorter: sorter
+  name: 'ActionsStats',
+  sampleInterval: 10000
 };
 
-class ActionsStatsService extends Service {
+class ActionsStats extends Service {
 
   constructor(options) {
     options = Object.assign({}, defaultOptions, options);
     super(options);
-    this.name = options.name || 'ActionsStatsService';
-    this.sampleInterval = options.sampleInterval || 10000;
+    this.name = options.name;
+    this.sampleInterval = options.sampleInterval;
   }
 
   setup(app) {
@@ -34,28 +34,31 @@ class ActionsStatsService extends Service {
     }, (resp) => {
       const info = resp.info;
       if (!info) return;
-      forEach(info.actions, action => {
+      let updateActions = map(info.actions, action => {
         action = Object.assign(action, {
-          id: info.app + '-' + action.pattern.topic + '-' + action.pattern.cmd,
+          action: action.pattern.topic + '.' + action.pattern.cmd,
           app: info.app,
           ts: info.ts
         });
         //debug('refresh action', action);
-        this.find({ query: {
-          id: action.id
-        }}).then(results => {
-          if (results && results.length > 0) {
-            return this.update(action.id, action);
+        return this.find({ query: {
+          action: action.action,
+          app: action.app
+        }}).then(result => {
+          if (result && result.data.length > 0) {
+            return this.update(result.data[0]._id, action);
           } else {
             return this.create(action);
           }
-        }).then(() => {
-          // remove outdated actions
-          return this.remove(null, { query: {
-            ts: { $lt: Date.now() - this.sampleInterval * 3 }
-          }}).catch(errors.NotFound);
-        }).catch(console.error);
+        });
       });
+      Promise.all(updateActions).then(() => {
+        // remove outdated actions
+        return this.remove(null, { query: {
+          $multiple: true,
+          ts: { $lt: Date.now() - this.sampleInterval * 3 }
+        }});
+      }).catch(console.error);
     });
   }
 
@@ -84,8 +87,14 @@ class ActionsStatsService extends Service {
   }
 }
 
-export default function init (options, hooks) {
-  return new ActionsStatsService(options);
+export default function init(app, options, hooks) {
+  options = options || {};
+  if (!options.Model) {
+    options.Model = createModel(app, 'stats_action');
+  }
+  const service = new ActionsStats(options);
+  if (hooks) service.hooks(hooks);
+  return service;
 }
 
-init.Service = Service;
+init.Service = ActionsStats;

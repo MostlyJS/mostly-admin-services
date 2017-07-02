@@ -7,7 +7,9 @@
     }]
   ],
   "plugins": [
-    "babel-plugin-root-import",
+    ["babel-plugin-root-import", {
+      "rootPathSuffix": "lib"
+    }],
     "babel-plugin-add-module-exports",
   ]
 }

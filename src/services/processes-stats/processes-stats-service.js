@@ -1,23 +1,22 @@
 import makeDebug from 'debug';
-import { Service } from 'feathers-memory';
 import errors from 'feathers-errors';
-import { hooks } from 'mostly-feathers-mongoose';
+import { Service, createModel } from 'mostly-feathers-mongoose';
 import defaultHooks from './processes-stats-hooks';
-import { sorter } from '../../utils';
 
 const debug = makeDebug('mostly:admin:service:processStats');
 
 const defaultOptions = {
-  sorter: sorter
+  name: 'ProcessStats',
+  sampleInterval: 10000
 };
 
-class ProcessStatsService extends Service {
+class ProcessStats extends Service {
 
   constructor(options) {
     options = Object.assign({}, defaultOptions, options);
     super(options);
-    this.name = options.name || 'ProcessStatsService';
-    this.sampleInterval = options.sampleInterval || 10000;
+    this.name = options.name;
+    this.sampleInterval = options.sampleInterval;
   }
 
   setup(app) {
@@ -32,25 +31,23 @@ class ProcessStatsService extends Service {
       topic: 'stats',
       cmd: 'processInfo'
     }, (resp) => {
-      const info = resp.info;
-      if (!info) return;
-      //debug('refresh process', info);
-      let proc = Object.assign(info, {
-        id: info.app
-      });
+      const proc = resp.info;
+      if (!proc) return;
+      //debug('refresh process', proc);
       this.find({ query: {
-        id: proc.id
+        app: proc.app
       }}).then(results => {
-        if (results && results.length > 0) {
-          return this.update(proc.id, proc);
+        if (results && results.data.length > 0) {
+          return this.update(results.data[0]._id, proc);
         } else {
           return this.create(proc);
         }
       }).then(() => {
         // remove outdated process
         return this.remove(null, { query: {
+          $multiple: true,
           ts: { $lt: Date.now() - this.sampleInterval * 3 }
-        }}).catch(errors.NotFound);
+        }});
       }).catch(console.error);
     });
   }
@@ -80,8 +77,14 @@ class ProcessStatsService extends Service {
   }
 }
 
-export default function init (options, hooks) {
-  return new ProcessStatsService(options);
+export default function init(app, options, hooks) {
+  options = options || {};
+  if (!options.Model) {
+    options.Model = createModel(app, 'stats_process');
+  }
+  const service = new ProcessStats(options);
+  if (hooks) service.hooks(hooks);
+  return service;
 }
 
 init.Service = Service;
