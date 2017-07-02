@@ -15,7 +15,6 @@ class ProcessStats extends Service {
   constructor(options) {
     options = Object.assign({}, defaultOptions, options);
     super(options);
-    this.name = options.name;
     this.sampleInterval = options.sampleInterval;
   }
 
@@ -51,30 +50,6 @@ class ProcessStats extends Service {
       }).catch(console.error);
     });
   }
-
-  find(params) {
-    return super.find(params);
-  }
-
-  get(id, params) {
-    return super.get(id, params);
-  }
-
-  create(data, params) {
-    return super.create(data, params);
-  }
-
-  update(id, data, params) {
-    return super.update(id, data, params);
-  }
-
-  patch(id, data, params) {
-    return super.patch(id, data, params);
-  }
-
-  remove(id, params) {
-    return super.remove(id, params);
-  }
 }
 
 export default function init(app, options, hooks) {
@@ -87,4 +62,4 @@ export default function init(app, options, hooks) {
   return service;
 }
 
-init.Service = Service;
+init.Service = ProcessStats;
