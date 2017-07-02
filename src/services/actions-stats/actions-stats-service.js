@@ -88,7 +88,7 @@ class ActionsStats extends Service {
 }
 
 export default function init(app, options, hooks) {
-  options = options || {};
+  options = Object.assign({}, options);
   if (!options.Model) {
     options.Model = createModel(app, 'stats_action');
   }
