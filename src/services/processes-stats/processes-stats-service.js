@@ -37,7 +37,7 @@ class ProcessStats extends Service {
         app: proc.app
       }}).then(results => {
         if (results && results.data.length > 0) {
-          return this.update(results.data[0]._id, proc);
+          return this.update(results.data[0].id, proc);
         } else {
           return this.create(proc);
         }

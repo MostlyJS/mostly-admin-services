@@ -45,7 +45,7 @@ class ActionsStats extends Service {
           app: action.app
         }}).then(result => {
           if (result && result.data.length > 0) {
-            return this.update(result.data[0]._id, action);
+            return this.update(result.data[0].id, action);
           } else {
             return this.create(action);
           }
