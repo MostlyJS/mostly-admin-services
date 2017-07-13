@@ -20,7 +20,7 @@ class ProcessStats extends Service {
 
   setup(app) {
     this.app = app;
-    this.hooks(defaultHooks);
+    this.hooks(defaultHooks(this.options));
     this._subProcessInfo();
   }
 
