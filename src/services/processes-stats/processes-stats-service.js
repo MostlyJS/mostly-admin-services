@@ -6,7 +6,7 @@ import defaultHooks from './processes-stats-hooks';
 const debug = makeDebug('mostly:admin:service:processStats');
 
 const defaultOptions = {
-  name: 'ProcessStats',
+  name: 'processes-stats',
   sampleInterval: 10000
 };
 
@@ -44,7 +44,7 @@ class ProcessStats extends Service {
       }).then(() => {
         // remove outdated process
         return this.remove(null, { query: {
-          $multiple: true,
+          $multi: true,
           ts: { $lt: Date.now() - this.sampleInterval * 3 }
         }});
       }).catch(console.error);

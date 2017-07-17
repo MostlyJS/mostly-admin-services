@@ -7,7 +7,7 @@ import defaultHooks from './actions-stats-hooks';
 const debug = makeDebug('mostly:admin:service:actionsStats');
 
 const defaultOptions = {
-  name: 'ActionsStats',
+  name: 'actions-stats',
   sampleInterval: 10000
 };
 
@@ -54,7 +54,7 @@ class ActionsStats extends Service {
       Promise.all(updateActions).then(() => {
         // remove outdated actions
         return this.remove(null, { query: {
-          $multiple: true,
+          $multi: true,
           ts: { $lt: Date.now() - this.sampleInterval * 3 }
         }});
       }).catch(console.error);
