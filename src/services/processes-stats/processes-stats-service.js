@@ -43,10 +43,12 @@ class ProcessStats extends Service {
         }
       }).then(() => {
         // remove outdated process
-        return this.remove(null, { query: {
-          $multi: true,
-          ts: { $lt: Date.now() - this.sampleInterval * 3 }
-        }});
+        return this.remove(null, {
+          query: {
+            ts: { $lt: Date.now() - this.sampleInterval * 3 }
+          },
+          $multi: true
+        });
       }).catch(console.error);
     });
   }

@@ -53,10 +53,12 @@ class ActionsStats extends Service {
       });
       Promise.all(updateActions).then(() => {
         // remove outdated actions
-        return this.remove(null, { query: {
-          $multi: true,
-          ts: { $lt: Date.now() - this.sampleInterval * 3 }
-        }});
+        return this.remove(null, {
+          query: {
+            ts: { $lt: Date.now() - this.sampleInterval * 3 }
+          },
+          $multi: true
+        });
       }).catch(console.error);
     });
   }
