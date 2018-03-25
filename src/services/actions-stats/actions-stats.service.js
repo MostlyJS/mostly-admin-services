@@ -2,7 +2,7 @@ import makeDebug from 'debug';
 import errors from 'feathers-errors';
 import { map } from 'lodash';
 import { Service, createModel } from 'mostly-feathers-mongoose';
-import defaultHooks from './actions-stats-hooks';
+import defaultHooks from './actions-stats.hooks';
 
 const debug = makeDebug('mostly:admin:service:actionsStats');
 
