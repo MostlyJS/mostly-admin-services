@@ -12,19 +12,19 @@ const defaultOptions = {
 
 class ProcessStats extends Service {
 
-  constructor(options) {
+  constructor (options) {
     options = Object.assign({}, defaultOptions, options);
     super(options);
     this.sampleInterval = options.sampleInterval;
   }
 
-  setup(app) {
+  setup (app) {
     this.app = app;
     this.hooks(defaultHooks(this.options));
     this._subProcessInfo();
   }
 
-  _subProcessInfo() {
+  _subProcessInfo () {
     this.app.trans.add({
       pubsub$: true,
       topic: 'stats',
@@ -54,7 +54,7 @@ class ProcessStats extends Service {
   }
 }
 
-export default function init(app, options, hooks) {
+export default function init (app, options, hooks) {
   options = Object.assign({}, options);
   if (!options.Model) {
     options.Model = createModel(app, 'stats_process');

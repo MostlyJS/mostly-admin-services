@@ -13,19 +13,19 @@ const defaultOptions = {
 
 class ActionsStats extends Service {
 
-  constructor(options) {
+  constructor (options) {
     options = Object.assign({}, defaultOptions, options);
     super(options);
     this.sampleInterval = options.sampleInterval;
   }
 
-  setup(app) {
+  setup (app) {
     this.app = app;
     this.hooks(defaultHooks(this.options));
     this._subActionsInfo();
   }
 
-  _subActionsInfo() {
+  _subActionsInfo () {
     this.app.trans.add({
       pubsub$: true,
       topic: 'stats',
@@ -64,7 +64,7 @@ class ActionsStats extends Service {
   }
 }
 
-export default function init(app, options, hooks) {
+export default function init (app, options, hooks) {
   options = Object.assign({}, options);
   if (!options.Model) {
     options.Model = createModel(app, 'stats_action');
