@@ -1,5 +1,4 @@
 import makeDebug from 'debug';
-import errors from 'feathers-errors';
 import { Service, createModel } from 'mostly-feathers-mongoose';
 import defaultHooks from './processes-stats.hooks';
 
