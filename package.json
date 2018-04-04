@@ -1,6 +1,6 @@
 {
   "name": "mostly-admin-services",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Admin services for MostlyJS microservices",
   "author": "Forafish",
   "license": "MIT",
