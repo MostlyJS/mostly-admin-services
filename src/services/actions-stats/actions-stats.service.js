@@ -1,5 +1,5 @@
 import makeDebug from 'debug';
-import { map } from 'lodash';
+import fp from 'mostly-func';
 import { Service, createModel } from 'mostly-feathers-mongoose';
 import defaultHooks from './actions-stats.hooks';
 
@@ -32,12 +32,12 @@ class ActionsStats extends Service {
     }, (resp) => {
       const info = resp.info;
       if (!info) return;
-      let updateActions = map(info.actions, action => {
+      let updateActions = fp.map(action => {
         action = Object.assign(action, {
           action: action.pattern.topic + '.' + action.pattern.cmd,
           app: info.app,
           ts: info.ts
-        });
+        }, info.actions);
         //debug('refresh action', action);
         return this.find({ query: {
           action: action.action,
