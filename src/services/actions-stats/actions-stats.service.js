@@ -32,12 +32,12 @@ class ActionsStats extends Service {
     }, (resp) => {
       const info = resp.info;
       if (!info) return;
-      let updateActions = fp.map(action => {
+      let updateActions = (actions) => fp.map(action => {
         action = Object.assign(action, {
           action: action.pattern.topic + '.' + action.pattern.cmd,
           app: info.app,
           ts: info.ts
-        }, info.actions);
+        });
         //debug('refresh action', action);
         return this.find({ query: {
           action: action.action,
@@ -49,8 +49,8 @@ class ActionsStats extends Service {
             return this.create(action);
           }
         });
-      });
-      Promise.all(updateActions).then(() => {
+      }, actions);
+      Promise.all(updateActions(info.actions)).then(() => {
         // remove outdated actions
         return this.remove(null, {
           query: {
