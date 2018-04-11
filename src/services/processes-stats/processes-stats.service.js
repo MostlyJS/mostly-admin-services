@@ -2,7 +2,7 @@ import makeDebug from 'debug';
 import { Service, createModel } from 'mostly-feathers-mongoose';
 import defaultHooks from './processes-stats.hooks';
 
-const debug = makeDebug('mostly:admin:service:processStats');
+const debug = makeDebug('mostly:admin-service:processStats');
 
 const defaultOptions = {
   name: 'processes-stats',
