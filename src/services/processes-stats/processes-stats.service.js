@@ -12,7 +12,7 @@ const defaultOptions = {
 class ProcessStats extends Service {
 
   constructor (options) {
-    options = Object.assign({}, defaultOptions, options);
+    options = fp.assign(defaultOptions, options);
     super(options);
     this.sampleInterval = options.sampleInterval;
   }
