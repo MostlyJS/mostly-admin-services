@@ -1,5 +1,7 @@
 import makeDebug from 'debug';
 import { Service, createModel } from 'mostly-feathers-mongoose';
+import fp from 'mostly-func';
+
 import defaultHooks from './processes-stats.hooks';
 
 const debug = makeDebug('mostly:admin-service:processStats');
