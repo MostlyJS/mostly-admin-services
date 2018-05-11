@@ -14,7 +14,7 @@ const defaultOptions = {
 class ProcessStats extends Service {
 
   constructor (options) {
-    options = fp.assign(defaultOptions, options);
+    options = fp.assignAll(defaultOptions, options);
     super(options);
     this.sampleInterval = options.sampleInterval;
   }
