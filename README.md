@@ -8,6 +8,10 @@ Admin services for MostlyJS microservices
 * actions-stats
 * process-stats
 
+# Documentation
+
+Please see the [documentation site](https://mostlyjs.github.io).
+
 # Usage
 
 ## Installation
