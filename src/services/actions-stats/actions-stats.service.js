@@ -1,8 +1,8 @@
-import makeDebug from 'debug';
-import fp from 'mostly-func';
-import { Service, createModel } from 'mostly-feathers-mongoose';
+const makeDebug = require('debug');
+const fp = require('mostly-func');
+const { Service, createModel } = require('mostly-feathers-mongoose');
 
-import defaultHooks from './actions-stats.hooks';
+const defaultHooks = require('./actions-stats.hooks');
 
 const debug = makeDebug('mostly:admin-service:actionsStats');
 
@@ -64,7 +64,7 @@ class ActionsStats extends Service {
   }
 }
 
-export default function init (app, options, hooks) {
+module.exports = function init (app, options, hooks) {
   options = Object.assign({}, options);
   if (!options.Model) {
     options.Model = createModel(app, 'stats_action');
@@ -72,6 +72,5 @@ export default function init (app, options, hooks) {
   const service = new ActionsStats(options);
   if (hooks) service.hooks(hooks);
   return service;
-}
-
-init.Service = ActionsStats;
+};
+module.exports.Service = ActionsStats;

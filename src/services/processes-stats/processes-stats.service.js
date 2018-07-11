@@ -1,8 +1,8 @@
-import makeDebug from 'debug';
-import { Service, createModel } from 'mostly-feathers-mongoose';
-import fp from 'mostly-func';
+const makeDebug = require('debug');
+const { Service, createModel } = require('mostly-feathers-mongoose');
+const fp = require('mostly-func');
 
-import defaultHooks from './processes-stats.hooks';
+const defaultHooks = require('./processes-stats.hooks');
 
 const debug = makeDebug('mostly:admin-service:processStats');
 
@@ -55,7 +55,7 @@ class ProcessStats extends Service {
   }
 }
 
-export default function init (app, options, hooks) {
+module.exports = function init (app, options, hooks) {
   options = Object.assign({}, options);
   if (!options.Model) {
     options.Model = createModel(app, 'stats_process');
@@ -63,6 +63,5 @@ export default function init (app, options, hooks) {
   const service = new ProcessStats(options);
   if (hooks) service.hooks(hooks);
   return service;
-}
-
-init.Service = ProcessStats;
+};
+module.exports.Service = ProcessStats;
