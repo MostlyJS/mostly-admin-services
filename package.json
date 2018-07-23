@@ -26,13 +26,7 @@
   "dependencies": {
     "debug": "^2.6.6",
     "feathers-authentication": "^1.2.3",
-    "feathers-authentication-hooks": "^0.1.4",
-    "feathers-authentication-jwt": "^0.3.1",
-    "feathers-authentication-local": "^0.3.4",
-    "feathers-memory": "^1.1.0",
-    "feathers-mongoose": "^5.1.0",
-    "mongoose": "^4.11.0",
-    "nats": "^1.0.0"
+    "glob": "^7.1.2"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",
