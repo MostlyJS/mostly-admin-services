@@ -17,7 +17,7 @@ Please see the [documentation site](https://mostlyjs.github.io).
 ## Installation
 
 ```bash
-npm install mostly-admin-services
+npm install mostly-admin-services --save
 ```
 
 # License
